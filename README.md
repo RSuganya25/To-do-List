@@ -23,6 +23,13 @@ Instructions for using the software:
 3. `delete_task("doc_id")` to delete  
 4. `listen_to_tasks()` to enable real-time update logging  
 
+> ℹ️ **Note:** The app includes error handling to skip malformed Firestore documents that are missing required fields such as `title` or `completed`.
+
+## Error Handling  
+- Tasks without a `title` or `completed` field will be automatically skipped and logged with a warning.
+- This ensures that the program does not crash when malformed data is present in the Firestore collection.
+- A message like `⚠️ Skipping malformed task: doc_id => {...}` will appear in the console.
+
 ## Development Environment  
 To recreate the development environment, you need the following software and/or libraries with the specified versions:  
 * Python 3.10+  
