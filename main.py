@@ -77,25 +77,38 @@ def main():
         print("3. Mark task as complete")
         print("4. Delete task")
         print("5. Exit")
-        choice = input("Enter your choice: ")
+        choice = input("Enter your choice: ").strip()
 
         if choice == "1":
             id_map = get_tasks_with_menu()
+
         elif choice == "2":
-            title = input("Title: ")
-            description = input("Description: ")
+            title = input("Title: ").strip()
+            description = input("Description: ").strip()
             add_task(title, description)
+
         elif choice == "3":
             id_map = get_tasks_with_menu()
-            task_num = int(input("Enter task number to complete: "))
+            task_input = input("Enter task number to complete: ").strip()
+            if not task_input.isdigit():
+                print("❌ Invalid input. Please enter a valid task number.")
+                continue
+            task_num = int(task_input)
             update_task_by_number(task_num, id_map)
+
         elif choice == "4":
             id_map = get_tasks_with_menu()
-            task_num = int(input("Enter task number to delete: "))
+            task_input = input("Enter task number to delete: ").strip()
+            if not task_input.isdigit():
+                print("❌ Invalid input. Please enter a valid task number.")
+                continue
+            task_num = int(task_input)
             delete_task_by_number(task_num, id_map)
+
         elif choice == "5":
             print("👋 Exiting...")
             break
+
         else:
             print("❌ Invalid choice")
 
