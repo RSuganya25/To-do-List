@@ -1,10 +1,10 @@
 ## Overview  
 **Project Title**: To-Do List with Firestore and Real-Time Updates  
-**Project Description**: A Python-based to-do list app that performs CRUD operations on a Firestore cloud database. It also listens for real-time updates whenever data changes in the cloud.  
+**Project Description**: A Python-based to-do list app that performs CRUD operations on a Firestore cloud database. It also listens for real-time updates whenever data changes in the cloud, providing instant feedback without manual refresh.  
 **Project Goals**:  
 - Build a cloud-connected app with Firebase Firestore  
 - Implement create, read, update, delete operations  
-- Add real-time update notifications  
+- Add real-time update notifications using Firestore snapshot listeners  
 - Learn how Python connects with Firestore  
 
 ## Instructions for Build and Use  
@@ -19,15 +19,15 @@ Steps to build and/or run the software:
 
 Instructions for using the software:  
 1. `add_task("Task", "Description")` to add a task  
-2. `update_task("doc_id", {"completed": True})` to update  
-3. `delete_task("doc_id")` to delete  
-4. `listen_to_tasks()` to enable real-time update logging  
+2. `update_task("doc_id", {"completed": True})` to update a task  
+3. `delete_task("doc_id")` to delete a task  
+4. `listen_to_tasks()` to start real-time update logging and automatically reflect changes  
 
 > ℹ️ **Note:** The app includes error handling to skip malformed Firestore documents that are missing required fields such as `title` or `completed`.
 
 ## Error Handling  
-- Tasks without a `title` or `completed` field will be automatically skipped and logged with a warning.
-- This ensures that the program does not crash when malformed data is present in the Firestore collection.
+- Tasks without a `title` or `completed` field will be automatically skipped and logged with a warning.  
+- This ensures the program does not crash when malformed data is present in the Firestore collection.  
 - A message like `⚠️ Skipping malformed task: doc_id => {...}` will appear in the console.
 
 ## Development Environment  
@@ -46,4 +46,4 @@ I found these websites useful in developing this software:
 The following items I plan to fix, improve, and/or add to this project in the future:  
 * [ ] Add a user interface (web or GUI)  
 * [ ] Implement user authentication with Firebase Auth  
-* [ ] Add support for multiple collections (e.g., users, tags)
+* [ ] Add support for multiple collections (e.g., users, tags)  
