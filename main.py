@@ -8,32 +8,39 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 tasks_ref = db.collection('tasks')
 
-# ---------- Add a new task ----------
 def add_task(title, description):
+    print("Set task priority (High, Medium, Low):")
+    priority = input().strip().capitalize()
+    if priority not in ['High', 'Medium', 'Low']:
+        print("Invalid priority, defaulting to Medium.")
+        priority = 'Medium'
     tasks_ref.add({
         'title': title,
         'description': description,
-        'completed': False
+        'completed': False,
+        'priority': priority
     })
-    print("✅ Task added!")
-
-# ---------- Get and Display All Tasks with Menu Numbers ----------
+    print("✅ Task added with priority:", priority)
 
 def get_tasks_with_menu():
-    tasks = tasks_ref.stream()
+    tasks = list(tasks_ref.stream())
     id_map = {}
-    print("\n--- To-Do Tasks ---")
-    for i, task in enumerate(tasks, 1):
+    priority_order = {'High': 1, 'Medium': 2, 'Low': 3}
+    task_list = []
+    for task in tasks:
         task_data = task.to_dict()
-        # Skip if task data is missing title or completed
+        priority = task_data.get('priority', 'Medium')
+        task_list.append((priority_order.get(priority, 2), task_data, task.id))
+    task_list.sort(key=lambda x: x[0])
+    print("\n--- To-Do Tasks (Sorted by Priority) ---")
+    for i, (prio_num, task_data, task_id) in enumerate(task_list, 1):
         if 'title' not in task_data or 'completed' not in task_data:
-            print(f"⚠️ Skipping malformed task: {task.id} => {task_data}")
+            print(f"⚠️ Skipping malformed task: {task_id} => {task_data}")
             continue
-        print(f"{i}. {task_data['title']} - {'✅' if task_data['completed'] else '❌'}")
-        id_map[i] = task.id
+        print(f"{i}. {task_data['title']} - Priority: {task_data.get('priority', 'Medium')} - {'✅' if task_data['completed'] else '❌'}")
+        id_map[i] = task_id
     return id_map
 
-# ---------- Update a Task by Menu Number ----------
 def update_task_by_number(task_num, id_map):
     if task_num in id_map:
         task_id = id_map[task_num]
@@ -43,7 +50,6 @@ def update_task_by_number(task_num, id_map):
     else:
         print("❌ Invalid task number!")
 
-# ---------- Delete a Task by Menu Number ----------
 def delete_task_by_number(task_num, id_map):
     if task_num in id_map:
         task_id = id_map[task_num]
@@ -52,7 +58,6 @@ def delete_task_by_number(task_num, id_map):
     else:
         print("❌ Invalid task number!")
 
-# ---------- Real-time Listener ----------
 def on_snapshot(col_snapshot, changes, read_time):
     print("\n📢 Real-time update:")
     for change in changes:
@@ -67,7 +72,6 @@ def listen_to_tasks():
     tasks_ref.on_snapshot(on_snapshot)
     print("👂 Listening for real-time changes...")
 
-# ---------- CLI Menu ----------
 def main():
     listen_to_tasks()
     while True:
@@ -93,8 +97,7 @@ def main():
             if not task_input.isdigit():
                 print("❌ Invalid input. Please enter a valid task number.")
                 continue
-            task_num = int(task_input)
-            update_task_by_number(task_num, id_map)
+            update_task_by_number(int(task_input), id_map)
 
         elif choice == "4":
             id_map = get_tasks_with_menu()
@@ -102,8 +105,7 @@ def main():
             if not task_input.isdigit():
                 print("❌ Invalid input. Please enter a valid task number.")
                 continue
-            task_num = int(task_input)
-            delete_task_by_number(task_num, id_map)
+            delete_task_by_number(int(task_input), id_map)
 
         elif choice == "5":
             print("👋 Exiting...")
